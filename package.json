@@ -1,0 +1,29 @@
+{
+  "name": "dialogflow-connector",
+  "version": "1.0.0",
+  "description": "Custom channel connector for Dialogflow CX",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gpjyothish/dialogflow-connector.git"
+  },
+  "keywords": [
+    "dialogflow",
+    "dialogflow-connector",
+    "channel-connector"
+  ],
+  "author": "Jyothish G",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gpjyothish/dialogflow-connector/issues"
+  },
+  "homepage": "https://github.com/gpjyothish/dialogflow-connector#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}
