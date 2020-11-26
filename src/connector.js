@@ -1,10 +1,8 @@
 var express = require('express')
 var bodyParser = require('body-parser')
-var dotenv = require('dotenv')
 var http = require('http')
 
-// load environment variables,
-require('dotenv').config()
+const { Facebook } = require('./channels/facebook')
 
 class Connector {
     constructor(config) {
@@ -24,10 +22,9 @@ class Connector {
         this.http.listen(process.env.port || process.env.PORT || 4000, () => {
             console.log('Express webserver configured and listening at ' + process.env.PORT || 4000)
         })
-        // If a webserver has been configured, auto-configure the default webhook url
-        if (this.webserver) {
-            this.configureWebhookEndpoint()
-        }
+        
+        this.configureWebhookEndpoint()
+        this.channelRouter()
     }
 
     /*
@@ -35,13 +32,19 @@ class Connector {
      */
     configureWebhookEndpoint() {
         if (this.webserver) {
-            this.webserver.post(this._config.webhook_uri, (req, res) => {
+            this.webserver.post(this.config.webhook_uri, (req, res) => {
                 res.send('ok')
                 console.log(req.body)
             })
         }
         else {
             throw new Error('Cannot configure webhook endpoints when webserver is disabled');
+        }
+    }
+
+    channelRouter () {
+        if (this.config.chennels.facebook) {
+            const FacebookConnector = new Facebook(this.config, this.webserver)
         }
     }
 }
