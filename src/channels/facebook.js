@@ -1,3 +1,5 @@
+const { Dialogflow } = require('../dialogflow')
+
 class Facebook {
     constructor(config, webserver) {
         this.config = config
@@ -7,6 +9,7 @@ class Facebook {
             this.config.webhook_uri = 'api/messages'
         }
         this.hubVerification ()
+        this.dialogflow = new Dialogflow (this.config, this.webserver)
     }
 
     // verify the hub signature
@@ -22,6 +25,29 @@ class Facebook {
                 res.send('Incorrect verify token')
             }
         })
+    }
+
+    messageHandler (reqBody) {
+        for (var e = 0; e < reqBody.entry.length; e++) {
+            for (var m = 0; m < reqBody.entry[e].messaging.length; m++) {
+                var facebookMessage = reqBody.entry[e].messaging[m]
+                // quick replies
+                if (facebookMessage.message.quick_reply) {
+                    var result = this.dialogflow.detectIntentText(facebookMessage.message.quick_reply.payload)
+                }
+                // normal text messages
+                else if (facebookMessage.message) {
+                    var result = this.dialogflow.detectIntentText(facebookMessage.message.text)
+                }
+                // post back messages
+                else if (facebookMessage.postback) {
+                    var result = this.dialogflow.detectIntentText(facebookMessage.message.postback.payload)
+                }
+                else {
+                    console.log('Got an unexpected message from Facebook: ', facebookMessage)
+                }
+            }
+        }
     }
 }
 exports.Facebook = Facebook
