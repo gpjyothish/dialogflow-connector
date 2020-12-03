@@ -33,17 +33,7 @@ class Dialogflow {
         }
 
         const [response] = await client.detectIntent(request)
-        console.log(`User Query: ${query}`)
-
-        for (const message of response.queryResult.responseMessages) {
-            if (message.text) {
-                console.log(`Agent Response: ${message.text.text}`)
-            }
-        }
-        if (response.queryResult.match.intent) {
-            console.log(`Matched Intent: ${response.queryResult.match.intent.displayName}`)
-        }
-        console.log(`Current Page: ${response.queryResult.currentPage.displayName}`)
+        return response
     }
 }
 exports.Dialogflow = Dialogflow

@@ -2,7 +2,7 @@ var express = require('express')
 var bodyParser = require('body-parser')
 var http = require('http')
 
-const { Facebook } = require('./channels/facebook')
+const { Facebook } = require('./channels/facebook/index')
 
 class Connector {
     constructor(config) {
