@@ -1,5 +1,5 @@
 const { Dialogflow } = require('../../dialogflow')
-const sendMessage = require('./sendMessages')
+const sendMessage = require('./messageServices/sendMessages')
 
 class Facebook {
     constructor(config, webserver) {
