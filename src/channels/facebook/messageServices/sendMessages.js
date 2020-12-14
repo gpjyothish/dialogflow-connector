@@ -35,11 +35,16 @@ module.exports = {
         else if (facebookMessageObj.attachment.structValue.fields.type.stringValue === 'template') {
             var templetePayload = facebookMessageObj.attachment.structValue.fields.payload
             var templateType = templetePayload.structValue.fields.template_type.stringValue
-            
+
             // check the type of template
             if (templateType === 'generic') {
                 var cardElements = templetePayload.structValue.fields.elements.listValue.values
                 await sendGenericTemplate(userId, cardElements)
+            }
+            if (templateType === 'button') {
+                let buttonText = templetePayload.structValue.fields.text.stringValue
+                var buttonList = templetePayload.structValue.fields.buttons.listValue.values
+                await sendButtonTemplate(userId, buttonText, buttonList)
             }
         }
         else {
@@ -139,6 +144,52 @@ async function sendGenericTemplate (userId, cardElements) {
                 'payload': {
                     'template_type': 'generic',
                     'elements': elementList
+                }
+            }
+        }
+    })
+    return sendRequest.makeRequest(options)
+}
+
+async function sendButtonTemplate (userId, buttonText, buttonObj) {
+    var buttonList = []
+
+    // loop through the buttonObj and form buttonList
+    for (const button of buttonObj) {
+        var buttonType = button.structValue.fields.type.stringValue
+        if (buttonType === 'postback') {
+            var buttonItem = {
+                'type': 'postback',
+                'title': `${button.structValue.fields.title.stringValue}`,
+                'payload': `${button.structValue.fields.payload.stringValue}`
+            }
+        }
+        else if (buttonType === 'web_url') {
+            var buttonItem = {
+                'type': 'web_url',
+                'title': `${button.structValue.fields.title.stringValue}`,
+                'url': `${button.structValue.fields.url.stringValue}`
+            }
+        }
+        else {
+            console.log('Sorry, invalid button type: ', buttonType)
+            return
+        }
+        buttonList.push(buttonItem)
+    }
+
+    options.body = JSON.stringify({
+        'messaging_type': 'RESPONSE',
+        'recipient': {
+            'id': userId
+        },
+        'message': {
+            'attachment': {
+                'type': 'template',
+                'payload': {
+                    'template_type': 'button',
+                    'text': `${buttonText}`,
+                    'buttons': buttonList
                 }
             }
         }
