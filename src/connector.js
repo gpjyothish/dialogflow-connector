@@ -1,6 +1,8 @@
 var express = require('express')
 var bodyParser = require('body-parser')
 var http = require('http')
+// load environment variables,
+require('dotenv').config()
 
 const { Facebook } = require('./channels/facebook/index')
 
